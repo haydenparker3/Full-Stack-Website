@@ -92,6 +92,9 @@ exports.commentOnPost = (req, res) => {
             if(!doc.exists){
                 return res.status(404).json({ error: 'Post not found'});
             }
+            return doc.ref.update({ commentCount: doc.data().commentCount + 1});
+        })
+        .then(() => {
             return db.collection('comments').add(newComment);
         })
         .then(() => {
@@ -156,20 +159,22 @@ exports.unlikePost = (req, res) => {
     let postData;
 
     postDocument.get()
-        .then(doc => {
+        .then((doc) => {
             if(doc.exists){
                 postData = doc.data();
                 postData.postId = doc.id;
                 return likeDocument.get();
             } else{
-                return res.stauts(404).json({ error: 'post not found'})
+                return res.status(404).json({ error: 'post not found'});
             }
         })
         .then(data => {
             if(data.empty){
                 return res.status(400).json({ error: 'Post not liked'})
             } else {
-                return db.doc(`/likes/${data.docs[0].data().id}`).delete()
+                return db
+                    .doc(`/likes/${data.docs[0].id}`)
+                    .delete()
                     .then(() => {
                         postData.likeCount--;
                         return postDocument.update({ likeCount: postData.likeCount});
@@ -184,3 +189,26 @@ exports.unlikePost = (req, res) => {
             res.status(500).json({ error: err.code})
         })
 };
+
+exports.deletePost = (req, res) =>{
+    const document = db.doc(`/posts/${req.params.postId}`)
+    document
+        .get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({ error: 'Post not found'})
+            } 
+            if(doc.data().userHandle !== req.user.handle){
+                return res.status(403).json({ error: 'Unauthorized'});
+            } else{
+                return document.delete();
+            }
+        })
+        .then(() => {
+            res.json({ message: 'Post deleted successfully'});
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code});
+        })
+}

@@ -10,7 +10,8 @@ const {
     getPost, 
     commentOnPost, 
     likePost, 
-    unlikePost
+    unlikePost,
+    deletePost
 } = require('./handlers/posts');
 const { 
     signup, 
@@ -23,6 +24,7 @@ const {
 //post routes
 app.get('/posts', getAllPosts);
 app.post('/posts', FBAuth, postAPost);
+app.delete('/posts/:postId', FBAuth, deletePost)
 app.get('/posts/:postId', getPost);
 app.post('/posts/:postId/comment', FBAuth, commentOnPost);
 app.get('/posts/:postId/like', FBAuth, likePost);
