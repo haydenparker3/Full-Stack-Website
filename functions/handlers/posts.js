@@ -121,7 +121,7 @@ exports.likePost = (req, res) => {
                 postData.postId = doc.id;
                 return likeDocument.get();
             } else{
-                return res.stauts(404).json({ error: 'post not found'})
+                return res.status(404).json({ error: 'post not found'})
             }
         })
         .then(data => {
