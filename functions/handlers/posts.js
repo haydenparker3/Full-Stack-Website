@@ -80,7 +80,8 @@ exports.getPost = (req, res) => {
 };
 
 exports.commentOnPost = (req, res) => {
-    if(req.body.body.trim() === '') return res.status(400).json({ error: 'must not be empty'});
+    if(req.body.body.trim() === '') 
+        return res.status(400).json({ comment: 'must not be empty'});
 
     const newComment = {
         body: req.body.body,
