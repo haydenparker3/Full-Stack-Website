@@ -59,7 +59,7 @@ class Post extends Component {
 					</Typography>
 					<LikeButton postId={postId} />
 					<span>{likeCount} Likes</span>
-					<MyButton tip='Comments'>
+					<MyButton tip='Comments' disabled='true'>
 						<ChatIcon color='primary' />
 					</MyButton>
 					<span>{commentCount} comments</span>
